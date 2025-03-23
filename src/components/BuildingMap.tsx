@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
 
 // Define the Building interface
@@ -14,10 +14,19 @@ interface Building {
 
 interface BuildingMapProps {
   buildings: Building[];
+  isSatelliteView?: boolean;
+  setIsSatelliteView?: (value: boolean) => void;
+}
+
+// Define the props interface for the dynamic component
+interface MapComponentProps {
+  buildings: Building[];
+  isSatelliteView?: boolean;
+  setIsSatelliteView?: (value: boolean) => void;
 }
 
 // Create a dynamic import for the map component to avoid SSR issues
-const MapWithNoSSR = dynamic(() => import('./MapComponent'), {
+const MapWithNoSSR = dynamic<MapComponentProps>(() => import('./MapComponent'), {
   ssr: false,
   loading: () => (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border flex items-center justify-center bg-gray-100">
@@ -26,6 +35,6 @@ const MapWithNoSSR = dynamic(() => import('./MapComponent'), {
   ),
 });
 
-export default function BuildingMap({ buildings }: BuildingMapProps) {
-  return <MapWithNoSSR buildings={buildings} />;
+export default function BuildingMap({ buildings, isSatelliteView = false, setIsSatelliteView }: BuildingMapProps) {
+  return <MapWithNoSSR buildings={buildings} isSatelliteView={isSatelliteView} setIsSatelliteView={setIsSatelliteView} />;
 }
